@@ -1,18 +1,34 @@
 # Copyright (c) HashiCorp, Inc.
 # SPDX-License-Identifier: MPL-2.0
 
+variable "tenancy_ocid" {
+}
+
+variable "user_ocid" {
+  default = ""
+}
+
+variable "fingerprint" {
+}
+
+variable "private_key_path" {
+  default = ""
+}
+
+variable "ssh_public_key" {
+  default = ""
+}
+
+variable "compartment_ocid" {
+}
+
 variable "region" {
-  description = "AWS region"
-  default     = "us-west-1"
 }
 
-variable "instance_type" {
-  description = "Type of EC2 instance to provision"
-  default     = "t2.micro"
+variable "instance_shape" {
+  default = "VM.Standard.A1.Flex" # Or VM.Standard.E2.1.Micro
 }
 
-variable "instance_name" {
-  description = "EC2 instance name"
-  default     = "Provisioned by Terraform"
-}
+variable "instance_ocpus" { default = 1 }
 
+variable "instance_shape_config_memory_in_gbs" { default = 6 }

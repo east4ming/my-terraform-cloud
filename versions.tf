@@ -3,9 +3,9 @@
 
 terraform {
   required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 3.28.0"
+    oci = {
+      source = "oracle/oci"
+      version = "~> 4.112.0"
     }
 
     random = {

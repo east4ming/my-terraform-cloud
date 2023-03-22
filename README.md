@@ -1,15 +1,15 @@
-# Terraform Cloud入门指南示例
+# Terraform Cloud 入门指南示例
 
-这是一个Terraform配置的例子，用于[Terraform Cloud入门指南](https://learn.hashicorp.com/terraform/cloud-gettingstarted/tfc_overview)。
+这是一个 Terraform 配置，在 Oracle 云基础设施上创建了 Always Free 服务。
+
+Terraform 代码用于创建一个资源管理器堆栈，创建所需的资源并在创建的资源上配置应用程序。
 
 ## 这将做什么？
 
-这是一个Terraform配置，将在你的AWS账户中创建一个EC2实例。
+这是一个 Terraform 配置，将在你的 OCI 账户中创建一个 Free Tier。
 
-当你在Terraform Cloud上建立一个工作空间时，你可以链接到这个资源库。然后，Terraform云可以在变化被推送时自动运行`terraform plan`和`terraform apply`。关于Terraform Cloud如何与版本控制系统互动的更多信息，请参阅[我们的VCS文档](https://www.terraform.io/docs/cloud/run/ui.html)。
+当你在 Terraform Cloud 上建立一个工作空间时，你可以链接到这个资源库。然后，Terraform 云可以在变化被推送时自动运行`terraform plan`和`terraform apply`。关于 Terraform Cloud 如何与版本控制系统互动的更多信息，请参阅 [我们的 VCS 文档](https://www.terraform.io/docs/cloud/run/ui.html)。
 
-## 有哪些先决条件？
+## Magic Button
 
-你必须有一个AWS账户，并向Terraform Cloud提供你的AWS Access Key ID和AWS Secret Access Key。Terraform Cloud使用[Vault](https://www.vaultproject.io/)对变量进行加密和存储。关于如何在Terraform Cloud中存储变量的更多信息，请参阅[我们的变量文档](https://www.terraform.io/docs/cloud/workspaces/variables.html)。
-
-`AWS_ACCESS_KEY_ID`和`AWS_SECRET_ACCESS_KEY`的值应该作为环境变量保存在工作区。
+[![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/oracle/terraform-provider-oci/raw/master/examples/zips/always_free.zip)

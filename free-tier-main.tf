@@ -1,5 +1,29 @@
-# Copyright (c) HashiCorp, Inc.
-# SPDX-License-Identifier: MPL-2.0
+// Copyright (c) 2017, 2023, Oracle and/or its affiliates. All rights reserved.
+// Licensed under the Mozilla Public License v2.0
+
+variable "tenancy_ocid" {
+}
+
+variable "user_ocid" {
+  default = ""
+}
+
+variable "fingerprint" {
+}
+
+variable "private_key_path" {
+  default = ""
+}
+
+variable "ssh_public_key" {
+  default = ""
+}
+
+variable "compartment_ocid" {
+}
+
+variable "region" {
+}
 
 provider "oci" {
   region           = var.region
@@ -8,6 +32,14 @@ provider "oci" {
   fingerprint      = var.fingerprint
   private_key_path = var.private_key_path
 }
+
+variable "instance_shape" {
+  default = "VM.Standard.A1.Flex" # Or VM.Standard.E2.1.Micro
+}
+
+variable "instance_ocpus" { default = 1 }
+
+variable "instance_shape_config_memory_in_gbs" { default = 6 }
 
 data "oci_identity_availability_domain" "ad" {
   compartment_id = var.tenancy_ocid
@@ -166,6 +198,11 @@ resource "tls_private_key" "compute_ssh_key" {
   rsa_bits  = 2048
 }
 
+output "generated_private_key_pem" {
+  value     = (var.ssh_public_key != "") ? var.ssh_public_key : tls_private_key.compute_ssh_key.private_key_pem
+  sensitive = true
+}
+
 /* Load Balancer */
 
 resource "oci_load_balancer_load_balancer" "free_load_balancer" {
@@ -309,6 +346,9 @@ resource "oci_load_balancer_listener" "load_balancer_listener1" {
   }
 }
 
+output "lb_public_ip" {
+  value = [oci_load_balancer_load_balancer.free_load_balancer.ip_address_details]
+}
 
 data "oci_core_vnic_attachments" "app_vnics" {
   compartment_id      = var.compartment_ocid
@@ -328,6 +368,10 @@ data "oci_core_images" "test_images" {
   shape                    = var.instance_shape
   sort_by                  = "TIMECREATED"
   sort_order               = "DESC"
+}
+
+output "app" {
+  value = "http://${data.oci_core_vnic.app_vnic.public_ip_address}"
 }
 
 data "oci_database_autonomous_databases" "test_autonomous_databases" {

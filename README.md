@@ -1,15 +1,15 @@
-# Terraform Cloud Getting Started Guide Example
+# Terraform Cloud入门指南示例
 
-This is an example Terraform configuration intended for use with the [Terraform Cloud Getting Started Guide](https://learn.hashicorp.com/terraform/cloud-gettingstarted/tfc_overview).
+这是一个Terraform配置的例子，用于[Terraform Cloud入门指南](https://learn.hashicorp.com/terraform/cloud-gettingstarted/tfc_overview)。
 
-## What will this do?
+## 这将做什么？
 
-This is a Terraform configuration that will create an EC2 instance in your AWS account. 
+这是一个Terraform配置，将在你的AWS账户中创建一个EC2实例。
 
-When you set up a Workspace on Terraform Cloud, you can link to this repository. Terraform Cloud can then run `terraform plan` and `terraform apply` automatically when changes are pushed. For more information on how Terraform Cloud interacts with Version Control Systems, see [our VCS documentation](https://www.terraform.io/docs/cloud/run/ui.html).
+当你在Terraform Cloud上建立一个工作空间时，你可以链接到这个资源库。然后，Terraform云可以在变化被推送时自动运行`terraform plan`和`terraform apply`。关于Terraform Cloud如何与版本控制系统互动的更多信息，请参阅[我们的VCS文档](https://www.terraform.io/docs/cloud/run/ui.html)。
 
-## What are the prerequisites?
+## 有哪些先决条件？
 
-You must have an AWS account and provide your AWS Access Key ID and AWS Secret Access Key to Terraform Cloud. Terraform Cloud encrypts and stores variables using [Vault](https://www.vaultproject.io/). For more information on how to store variables in Terraform Cloud, see [our variable documentation](https://www.terraform.io/docs/cloud/workspaces/variables.html).
+你必须有一个AWS账户，并向Terraform Cloud提供你的AWS Access Key ID和AWS Secret Access Key。Terraform Cloud使用[Vault](https://www.vaultproject.io/)对变量进行加密和存储。关于如何在Terraform Cloud中存储变量的更多信息，请参阅[我们的变量文档](https://www.terraform.io/docs/cloud/workspaces/variables.html)。
 
-The values for `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` should be saved as environment variables on your workspace.
+`AWS_ACCESS_KEY_ID`和`AWS_SECRET_ACCESS_KEY`的值应该作为环境变量保存在工作区。

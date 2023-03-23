@@ -328,7 +328,7 @@ resource "oci_load_balancer_listener" "load_balancer_listener1" {
 # See https://docs.oracle.com/iaas/images/
 data "oci_core_images" "test_images_x86" {
   compartment_id           = var.compartment_ocid
-  operating_system         = "Ubuntu"
+  operating_system         = "Canonical Ubuntu"
   operating_system_version = "22.04"
   shape                    = var.instance_shape_x86
   sort_by                  = "TIMECREATED"
@@ -337,7 +337,7 @@ data "oci_core_images" "test_images_x86" {
 
 data "oci_core_images" "test_images_arm" {
   compartment_id           = var.compartment_ocid
-  operating_system         = "Ubuntu"
+  operating_system         = "Canonical Ubuntu"
   operating_system_version = "22.04"
   shape                    = var.instance_shape_arm
   sort_by                  = "TIMECREATED"

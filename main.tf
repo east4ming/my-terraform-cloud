@@ -313,18 +313,6 @@ resource "oci_load_balancer_listener" "load_balancer_listener1" {
   }
 }
 
-
-# data "oci_core_vnic_attachments" "app_vnics" {
-#   for_each            = concat(oci_core_instance.free_instance_x86.id, oci_core_instance.free_instance_arm.id)
-#   compartment_id      = var.compartment_ocid
-#   availability_domain = data.oci_identity_availability_domain.ad.name
-#   instance_id         = each.value
-# }
-
-# data "oci_core_vnic" "app_vnic" {
-#   vnic_id = data.oci_core_vnic_attachments.app_vnics.vnic_attachments[0]["vnic_id"]
-# }
-
 # See https://docs.oracle.com/iaas/images/
 data "oci_core_images" "test_images_x86" {
   compartment_id           = var.compartment_ocid

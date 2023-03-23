@@ -203,10 +203,11 @@ resource "oci_load_balancer_backend_set" "free_load_balancer_backend_set" {
   }
 }
 
-resource "oci_load_balancer_backend" "free_load_balancer_test_backend0" {
+resource "oci_load_balancer_backend" "free_load_balancer_test_backend" {
   #Required
+  for_each         = concat(oci_core_instance.free_instance_x86.private_ip, oci_core_instance.free_instance_arm.private_ip)
   backendset_name  = oci_load_balancer_backend_set.free_load_balancer_backend_set.name
-  ip_address       = oci_core_instance.free_instance0.public_ip
+  ip_address       = each.value
   load_balancer_id = oci_load_balancer_load_balancer.free_load_balancer.id
   port             = "80"
 }
@@ -313,9 +314,10 @@ resource "oci_load_balancer_listener" "load_balancer_listener1" {
 
 
 data "oci_core_vnic_attachments" "app_vnics" {
+  for_each            = concat(oci_core_instance.free_instance_x86.id, oci_core_instance.free_instance_arm.id)
   compartment_id      = var.compartment_ocid
   availability_domain = data.oci_identity_availability_domain.ad.name
-  instance_id         = oci_core_instance.free_instance0.id
+  instance_id         = each.value
 }
 
 data "oci_core_vnic" "app_vnic" {
@@ -323,11 +325,20 @@ data "oci_core_vnic" "app_vnic" {
 }
 
 # See https://docs.oracle.com/iaas/images/
-data "oci_core_images" "test_images" {
+data "oci_core_images" "test_images_x86" {
   compartment_id           = var.compartment_ocid
   operating_system         = "Ubuntu"
   operating_system_version = "22.04"
-  shape                    = var.instance_shape
+  shape                    = var.instance_shape_x86
+  sort_by                  = "TIMECREATED"
+  sort_order               = "DESC"
+}
+
+data "oci_core_images" "test_images_arm" {
+  compartment_id           = var.compartment_ocid
+  operating_system         = "Ubuntu"
+  operating_system_version = "22.04"
+  shape                    = var.instance_shape_arm
   sort_by                  = "TIMECREATED"
   sort_order               = "DESC"
 }

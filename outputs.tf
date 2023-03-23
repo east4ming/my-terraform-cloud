@@ -22,10 +22,10 @@ output "instance_public_ips_x86" {
   value = [oci_core_instance.free_instance_x86.*.public_ip]
 }
 
-output "instance_private_ips_arm" {
-  value = [oci_core_instance.free_instance_arm.*.private_ip]
-}
+# output "instance_private_ips_arm" {
+#   value = [oci_core_instance.free_instance_arm.*.private_ip]
+# }
 
-output "instance_public_ips_arm" {
-  value = [oci_core_instance.free_instance_arm.*.public_ip]
-}
+# output "instance_public_ips_arm" {
+#   value = [oci_core_instance.free_instance_arm.*.public_ip]
+# }

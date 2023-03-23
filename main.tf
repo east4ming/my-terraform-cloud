@@ -126,7 +126,7 @@ resource "oci_core_instance" "free_instance_x86" {
 
   source_details {
     source_type = "image"
-    source_id   = lookup(data.oci_core_images.test_images.images[0], "id")
+    source_id   = lookup(data.oci_core_images.test_images_x86.images[0], "id")
   }
 
   metadata = {
@@ -155,7 +155,7 @@ resource "oci_core_instance" "free_instance_x86" {
 
 #   source_details {
 #     source_type = "image"
-#     source_id   = lookup(data.oci_core_images.test_images.images[0], "id")
+#     source_id   = lookup(data.oci_core_images.test_images_arm.images[0], "id")
 #   }
 
 #   metadata = {

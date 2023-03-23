@@ -133,33 +133,33 @@ resource "oci_core_instance" "free_instance0" {
   }
 }
 
-resource "oci_core_instance" "free_instance1" {
-  availability_domain = data.oci_identity_availability_domain.ad.name
-  compartment_id      = var.compartment_ocid
-  display_name        = "freeInstance1"
-  shape               = var.instance_shape
+# resource "oci_core_instance" "free_instance1" {
+#   availability_domain = data.oci_identity_availability_domain.ad.name
+#   compartment_id      = var.compartment_ocid
+#   display_name        = "freeInstance1"
+#   shape               = var.instance_shape
 
-  shape_config {
-    ocpus = 1
-    memory_in_gbs = 6
-  }
+#   shape_config {
+#     ocpus = 1
+#     memory_in_gbs = 6
+#   }
 
-  create_vnic_details {
-    subnet_id        = oci_core_subnet.test_subnet.id
-    display_name     = "primaryvnic"
-    assign_public_ip = true
-    hostname_label   = "freeinstance1"
-  }
+#   create_vnic_details {
+#     subnet_id        = oci_core_subnet.test_subnet.id
+#     display_name     = "primaryvnic"
+#     assign_public_ip = true
+#     hostname_label   = "freeinstance1"
+#   }
 
-  source_details {
-    source_type = "image"
-    source_id   = lookup(data.oci_core_images.test_images.images[0], "id")
-  }
+#   source_details {
+#     source_type = "image"
+#     source_id   = lookup(data.oci_core_images.test_images.images[0], "id")
+#   }
 
-  metadata = {
-    ssh_authorized_keys = (var.ssh_public_key != "") ? var.ssh_public_key : tls_private_key.compute_ssh_key.public_key_openssh
-  }
-}
+#   metadata = {
+#     ssh_authorized_keys = (var.ssh_public_key != "") ? var.ssh_public_key : tls_private_key.compute_ssh_key.public_key_openssh
+#   }
+# }
 
 resource "tls_private_key" "compute_ssh_key" {
   algorithm = "RSA"
@@ -209,13 +209,13 @@ resource "oci_load_balancer_backend" "free_load_balancer_test_backend0" {
   port             = "80"
 }
 
-resource "oci_load_balancer_backend" "free_load_balancer_test_backend1" {
-  #Required
-  backendset_name  = oci_load_balancer_backend_set.free_load_balancer_backend_set.name
-  ip_address       = oci_core_instance.free_instance1.public_ip
-  load_balancer_id = oci_load_balancer_load_balancer.free_load_balancer.id
-  port             = "80"
-}
+# resource "oci_load_balancer_backend" "free_load_balancer_test_backend1" {
+#   #Required
+#   backendset_name  = oci_load_balancer_backend_set.free_load_balancer_backend_set.name
+#   ip_address       = oci_core_instance.free_instance1.public_ip
+#   load_balancer_id = oci_load_balancer_load_balancer.free_load_balancer.id
+#   port             = "80"
+# }
 
 resource "oci_load_balancer_hostname" "test_hostname1" {
   #Required

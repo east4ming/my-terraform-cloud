@@ -2,11 +2,11 @@
 # SPDX-License-Identifier: MPL-2.0
 
 provider "oci" {
-  region           = var.region
-  tenancy_ocid     = var.tenancy_ocid
-  user_ocid        = var.user_ocid
-  fingerprint      = var.fingerprint
-  private_key = var.private_key
+  region       = var.region
+  tenancy_ocid = var.tenancy_ocid
+  user_ocid    = var.user_ocid
+  fingerprint  = var.fingerprint
+  private_key  = var.private_key
 }
 
 data "oci_identity_availability_domain" "ad" {
@@ -105,22 +105,23 @@ resource "oci_core_security_list" "test_security_list" {
 
 /* Instances */
 
-resource "oci_core_instance" "free_instance0" {
+resource "oci_core_instance" "free_instance_x86" {
+  count               = var.instance_nums_x86
   availability_domain = data.oci_identity_availability_domain.ad.name
   compartment_id      = var.compartment_ocid
-  display_name        = "freeInstance0"
-  shape               = var.instance_shape
+  display_name        = "freeInstanceX86$(count.index)"
+  shape               = var.instance_shape_x86
 
   shape_config {
-    ocpus = var.instance_ocpus
-    memory_in_gbs = var.instance_shape_config_memory_in_gbs
+    ocpus         = var.instance_ocpus_x86
+    memory_in_gbs = var.instance_shape_config_memory_in_gbs_x86
   }
 
   create_vnic_details {
     subnet_id        = oci_core_subnet.test_subnet.id
     display_name     = "primaryvnic"
     assign_public_ip = true
-    hostname_label   = "freeinstance0"
+    hostname_label   = "freeinstancex86$(count.index)"
   }
 
   source_details {
@@ -133,22 +134,23 @@ resource "oci_core_instance" "free_instance0" {
   }
 }
 
-# resource "oci_core_instance" "free_instance1" {
+# resource "oci_core_instance" "free_instance_arm" {
+#   count               = var.instance_nums_arm
 #   availability_domain = data.oci_identity_availability_domain.ad.name
 #   compartment_id      = var.compartment_ocid
-#   display_name        = "freeInstance1"
-#   shape               = var.instance_shape
+#   display_name        = "freeInstanceArm$(count.index)"
+#   shape               = var.instance_shape_arm
 
 #   shape_config {
-#     ocpus = 1
-#     memory_in_gbs = 6
+#     ocpus         = var.instance_ocpus_arm
+#     memory_in_gbs = var.instance_shape_config_memory_in_gbs_arm
 #   }
 
 #   create_vnic_details {
 #     subnet_id        = oci_core_subnet.test_subnet.id
 #     display_name     = "primaryvnic"
 #     assign_public_ip = true
-#     hostname_label   = "freeinstance1"
+#     hostname_label   = "freeinstancearm$(count.index)"
 #   }
 
 #   source_details {
@@ -266,9 +268,9 @@ resource "tls_self_signed_cert" "example" {
 
   subject {
     organization = "Oracle"
-    country = "US"
-    locality = "Austin"
-    province = "TX"
+    country      = "US"
+    locality     = "Austin"
+    province     = "TX"
   }
 
   validity_period_hours = 8760 # 1 year
@@ -323,8 +325,8 @@ data "oci_core_vnic" "app_vnic" {
 # See https://docs.oracle.com/iaas/images/
 data "oci_core_images" "test_images" {
   compartment_id           = var.compartment_ocid
-  operating_system         = "Oracle Linux"
-  operating_system_version = "8"
+  operating_system         = "Ubuntu"
+  operating_system_version = "22.04"
   shape                    = var.instance_shape
   sort_by                  = "TIMECREATED"
   sort_order               = "DESC"

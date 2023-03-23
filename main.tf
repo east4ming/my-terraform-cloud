@@ -203,19 +203,20 @@ resource "oci_load_balancer_backend_set" "free_load_balancer_backend_set" {
   }
 }
 
-resource "oci_load_balancer_backend" "free_load_balancer_test_backend" {
+resource "oci_load_balancer_backend" "free_load_balancer_test_backend_x86" {
   #Required
-  for_each         = concat(oci_core_instance.free_instance_x86.private_ip, oci_core_instance.free_instance_arm.private_ip)
+  count            = length(oci_core_instance.free_instance_x86)
   backendset_name  = oci_load_balancer_backend_set.free_load_balancer_backend_set.name
-  ip_address       = each.value
+  ip_address       = oci_core_instance.free_instance_x86[count.index].private_ip
   load_balancer_id = oci_load_balancer_load_balancer.free_load_balancer.id
   port             = "80"
 }
 
-# resource "oci_load_balancer_backend" "free_load_balancer_test_backend1" {
+# resource "oci_load_balancer_backend" "free_load_balancer_test_backend_arm" {
 #   #Required
+#   count            = length(oci_core_instance.free_instance_arm)
 #   backendset_name  = oci_load_balancer_backend_set.free_load_balancer_backend_set.name
-#   ip_address       = oci_core_instance.free_instance1.public_ip
+#   ip_address       = oci_core_instance.free_instance_arm[count.index].private_ip
 #   load_balancer_id = oci_load_balancer_load_balancer.free_load_balancer.id
 #   port             = "80"
 # }
@@ -313,16 +314,16 @@ resource "oci_load_balancer_listener" "load_balancer_listener1" {
 }
 
 
-data "oci_core_vnic_attachments" "app_vnics" {
-  for_each            = concat(oci_core_instance.free_instance_x86.id, oci_core_instance.free_instance_arm.id)
-  compartment_id      = var.compartment_ocid
-  availability_domain = data.oci_identity_availability_domain.ad.name
-  instance_id         = each.value
-}
+# data "oci_core_vnic_attachments" "app_vnics" {
+#   for_each            = concat(oci_core_instance.free_instance_x86.id, oci_core_instance.free_instance_arm.id)
+#   compartment_id      = var.compartment_ocid
+#   availability_domain = data.oci_identity_availability_domain.ad.name
+#   instance_id         = each.value
+# }
 
-data "oci_core_vnic" "app_vnic" {
-  vnic_id = data.oci_core_vnic_attachments.app_vnics.vnic_attachments[0]["vnic_id"]
-}
+# data "oci_core_vnic" "app_vnic" {
+#   vnic_id = data.oci_core_vnic_attachments.app_vnics.vnic_attachments[0]["vnic_id"]
+# }
 
 # See https://docs.oracle.com/iaas/images/
 data "oci_core_images" "test_images_x86" {

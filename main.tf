@@ -58,13 +58,36 @@ resource "oci_core_security_list" "test_security_list" {
   display_name   = "testSecurityList"
 
   egress_security_rules {
-    protocol    = "6"
+    # The transport protocol. 
+    # Specify either `all` or an IPv4 protocol number as defined in Protocol Numbers. 
+    # Options are supported only for ICMP ("1"), TCP ("6"), UDP ("17"), and ICMPv6 ("58").
+    description = "allow all"
+    protocol    = "all"
     destination = "0.0.0.0/0"
   }
 
   ingress_security_rules {
-    protocol = "6"
-    source   = "0.0.0.0/0"
+    description = "internet ICMP"
+    protocol    = "1"
+    source      = "0.0.0.0/0"
+  }
+
+  ingress_security_rules {
+    description = "internet ICMPv6"
+    protocol    = "58"
+    source      = "0.0.0.0/0"
+  }
+
+  ingress_security_rules {
+    description = "VPC ICMP"
+    protocol    = "1"
+    source      = "10.1.0.0/16"
+  }
+
+  ingress_security_rules {
+    description = "ssh"
+    protocol    = "6"
+    source      = "0.0.0.0/0"
 
     tcp_options {
       max = "22"
@@ -73,32 +96,123 @@ resource "oci_core_security_list" "test_security_list" {
   }
 
   ingress_security_rules {
-    protocol = "6"
-    source   = "0.0.0.0/0"
+    description = "TCP DNS"
+    protocol    = "6"
+    source      = "0.0.0.0/0"
 
     tcp_options {
-      max = "3000"
-      min = "3000"
+      max = "53"
+      min = "53"
     }
   }
 
   ingress_security_rules {
-    protocol = "6"
-    source   = "0.0.0.0/0"
+    description = "UDP DNS"
+    protocol    = "17"
+    source      = "0.0.0.0/0"
 
-    tcp_options {
-      max = "3005"
-      min = "3005"
+    udp_options {
+      max = "53"
+      min = "53"
     }
   }
 
   ingress_security_rules {
-    protocol = "6"
-    source   = "0.0.0.0/0"
+    description = "http"
+    protocol    = "6"
+    source      = "0.0.0.0/0"
 
     tcp_options {
       max = "80"
       min = "80"
+    }
+  }
+
+  ingress_security_rules {
+    description = "https"
+    protocol    = "6"
+    source      = "0.0.0.0/0"
+
+    tcp_options {
+      max = "443"
+      min = "443"
+    }
+  }
+
+  ingress_security_rules {
+    description = "http test"
+    protocol    = "6"
+    source      = "0.0.0.0/0"
+
+    tcp_options {
+      max = "8090"
+      min = "8080"
+    }
+  }
+
+  ingress_security_rules {
+    description = "k8s api"
+    protocol    = "6"
+    source      = "0.0.0.0/0"
+
+    tcp_options {
+      max = "6443"
+      min = "6443"
+    }
+  }
+
+  ingress_security_rules {
+    description = "k8s kubectl metrics"
+    protocol    = "6"
+    source      = "0.0.0.0/0"
+
+    tcp_options {
+      max = "10250"
+      min = "10250"
+    }
+  }
+
+  ingress_security_rules {
+    description = "k8s flannel"
+    protocol    = "17"
+    source      = "0.0.0.0/0"
+
+    udp_options {
+      max = "8472"
+      min = "8472"
+    }
+  }
+
+  ingress_security_rules {
+    description = "wireguard"
+    protocol    = "17"
+    source      = "0.0.0.0/0"
+
+    udp_options {
+      max = "51830"
+      min = "51820"
+    }
+  }
+
+  ingress_security_rules {
+    description = "tailscale"
+    protocol    = "17"
+    source      = "0.0.0.0/0"
+
+    udp_options {
+      max = "3478"
+      min = "3478"
+    }
+  }
+
+  ingress_security_rules {
+    description = "tailscale"
+    protocol    = "17"
+    source      = "0.0.0.0/0"
+
+    udp_options {
+      max = "41641"
+      min = "41641"
     }
   }
 }

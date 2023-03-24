@@ -13,20 +13,6 @@ if [ -f /tmp/userdata-parameter ]; then
     source /tmp/userdata-parameter
 fi
 
-if [[ -z "\$${Language}" || -z "\$${Timezone}" || -z "\$${VpcNetwork}" ]]; then
-    # Default Language
-    Language="en_US.UTF-8"
-    # Default Timezone
-    Timezone="Asia/Tokyo"
-    # Default VPC Network
-    VpcNetwork="IPv4"
-fi
-
-# echo
-echo \$Language
-echo \$Timezone
-echo \$VpcNetwork
-
 #-------------------------------------------------------------------------------
 # Parameter Settings
 #-------------------------------------------------------------------------------
@@ -143,7 +129,7 @@ ansible localhost -m setup
 curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
 
 # Add the HashiCorp Linux Repository
-apt-add-repository "deb [arch=\$$(dpkg --print-architecture)] https://apt.releases.hashicorp.com \$$(lsb_release -cs) main"
+apt-add-repository "deb [arch=\$(dpkg --print-architecture)] https://apt.releases.hashicorp.com \$(lsb_release -cs) main"
 
 # apt repository metadata Clean up
 apt clean -y
@@ -160,7 +146,7 @@ terraform version
 
 ## terraform -install-autocomplete
 cat >/etc/profile.d/terraform.sh <<__EOF__
-if [ -n "\\$$BASH_VERSION" ]; then
+if [ -n "\\$BASH_VERSION" ]; then
    complete -C /usr/bin/terraform terraform
 fi
 __EOF__
@@ -175,7 +161,7 @@ source /etc/profile.d/terraform.sh
 apt update -y -q && apt install -y -q nomad
 
 # Nomad Install CNI plugins
-curl -L -o cni-plugins.tgz "https://github.com/containernetworking/plugins/releases/download/v1.0.0/cni-plugins-linux-\$$([ \$$(uname -m) = aarch64 ] && echo arm64 || echo amd64)"-v1.0.0.tgz &&
+curl -L -o cni-plugins.tgz "https://github.com/containernetworking/plugins/releases/download/v1.0.0/cni-plugins-linux-\$([ \$(uname -m) = aarch64 ] && echo arm64 || echo amd64)"-v1.0.0.tgz &&
     mkdir -p /opt/cni/bin &&
     tar -C /opt/cni/bin -xzf cni-plugins.tgz
 # Nomad sysctl tuning
@@ -279,14 +265,6 @@ if [ \$(command -v ufw) ]; then
     fi
 fi
 
-# Linux Security Information(AppArmor)
-if [ \$(command -v aa-status) ]; then
-    if [ \$(systemctl is-enabled apparmor) = "enabled" ]; then
-        # Linux Security Information(AppArmor) [aa-status]
-        aa-status
-    fi
-fi
-
 #-------------------------------------------------------------------------------
 # Configure Tuned
 #-------------------------------------------------------------------------------
@@ -363,110 +341,51 @@ systemctl daemon-reload
 #-------------------------------------------------------------------------------
 
 # Setting SystemClock and Timezone
-if [ "\$${Timezone}" = "Asia/Tokyo" ]; then
-    echo "# Setting SystemClock and Timezone -> \$$Timezone"
-    date
-    timedatectl status --no-pager
-    timedatectl set-timezone Asia/Tokyo
-    timedatectl status --no-pager
-    dpkg-reconfigure --frontend noninteractive tzdata
-    date
-elif [ "\$${Timezone}" = "UTC" ]; then
-    echo "# Setting SystemClock and Timezone -> \$$Timezone"
-    date
-    timedatectl status --no-pager
-    timedatectl set-timezone UTC
-    timedatectl status --no-pager
-    dpkg-reconfigure --frontend noninteractive tzdata
-    date
-else
-    echo "# Default SystemClock and Timezone"
-    date
-    timedatectl status --no-pager
-    dpkg-reconfigure --frontend noninteractive tzdata
-    date
-fi
+echo "# Setting SystemClock and Timezone -> Asia/Tokyo"
+date
+timedatectl status --no-pager
+timedatectl set-timezone Asia/Tokyo
+timedatectl status --no-pager
+dpkg-reconfigure --frontend noninteractive tzdata
+date
 
 # Setting System Language
-if [ "\$${Language}" = "ja_JP.UTF-8" ]; then
-    # Custom Package Installation [language-pack-ja]
-    apt install -y -q language-pack-ja-base language-pack-ja fonts-ipafont
-
-    echo "# Setting System Language -> \$$Language"
-    locale
-    localectl status --no-pager
-    localectl list-locales --no-pager | grep ja_
-    localectl set-locale LANG=ja_JP.UTF-8 LANGUAGE="ja_JP:ja"
-    dpkg-reconfigure --frontend noninteractive locales
-    localectl status --no-pager
-    locale
-    strings /etc/default/locale
-    source /etc/default/locale
-elif [ "\$${Language}" = "en_US.UTF-8" ]; then
-    echo "# Setting System Language -> \$$Language"
-    locale
-    localectl status --no-pager
-    localectl list-locales --no-pager | grep en_
-    localectl set-locale LANG=en_US.UTF-8
-    dpkg-reconfigure --frontend noninteractive locales
-    localectl status --no-pager
-    locale
-    strings /etc/default/locale
-    source /etc/default/locale
-else
-    echo "# Default Language"
-    locale
-    localectl status --no-pager
-    strings /etc/default/locale
-fi
+echo "# Setting System Language -> en_US.UTF-8"
+locale
+localectl status --no-pager
+localectl list-locales --no-pager | grep en_
+localectl set-locale LANG=en_US.UTF-8
+dpkg-reconfigure --frontend noninteractive locales
+localectl status --no-pager
+locale
+strings /etc/default/locale
+source /etc/default/locale
 
 # Setting IP Protocol Stack (IPv4 Only) or (IPv4/IPv6 Dual stack)
-if [ "\$${VpcNetwork}" = "IPv4" ]; then
-    echo "# Setting IP Protocol Stack -> \$$VpcNetwork"
+echo "# Setting IP Protocol Stack -> IPv4"
 
-    # Disable IPv6 Uncomplicated Firewall (ufw)
-    if [ -e /etc/default/ufw ]; then
-        sed -i "s/IPV6=yes/IPV6=no/g" /etc/default/ufw
-    fi
-
-    # Disable IPv6 Kernel Module
-    echo "options ipv6 disable=1" >>/etc/modprobe.d/ipv6.conf
-
-    # Disable IPv6 Kernel Parameter
-    sysctl -a
-
-    DisableIPv6Conf="/etc/sysctl.d/99-ipv6-disable.conf"
-
-    cat /dev/null >\$DisableIPv6Conf
-    echo '# Custom sysctl Parameter for ipv6 disable' >>\$DisableIPv6Conf
-    echo 'net.ipv6.conf.all.disable_ipv6 = 1' >>\$DisableIPv6Conf
-    echo 'net.ipv6.conf.default.disable_ipv6 = 1' >>\$DisableIPv6Conf
-
-    sysctl --system
-    sysctl -p
-
-    sysctl -a | grep -ie "local_port" -ie "ipv6" | sort
-elif [ "\$${VpcNetwork}" = "IPv6" ]; then
-    echo "# Show IP Protocol Stack -> \$$VpcNetwork"
-    echo "# Show IPv6 Network Interface Address"
-    ifconfig
-    echo "# Show IPv6 Kernel Module"
-    lsmod | awk '{print \$$1}' | grep ipv6
-    echo "# Show Network Listen Address and report"
-    netstat -an -A inet6
-    echo "# Show Network Routing Table"
-    netstat -r -A inet6
-else
-    echo "# Default IP Protocol Stack"
-    echo "# Show IPv6 Network Interface Address"
-    ifconfig
-    echo "# Show IPv6 Kernel Module"
-    lsmod | awk '{print \$$1}' | grep ipv6
-    echo "# Show Network Listen Address and report"
-    netstat -an -A inet6
-    echo "# Show Network Routing Table"
-    netstat -r -A inet6
+# Disable IPv6 Uncomplicated Firewall (ufw)
+if [ -e /etc/default/ufw ]; then
+    sed -i "s/IPV6=yes/IPV6=no/g" /etc/default/ufw
 fi
+
+# Disable IPv6 Kernel Module
+echo "options ipv6 disable=1" >>/etc/modprobe.d/ipv6.conf
+
+# Disable IPv6 Kernel Parameter
+sysctl -a
+
+DisableIPv6Conf="/etc/sysctl.d/99-ipv6-disable.conf"
+
+cat /dev/null >\$DisableIPv6Conf
+echo '# Custom sysctl Parameter for ipv6 disable' >>\$DisableIPv6Conf
+echo 'net.ipv6.conf.all.disable_ipv6 = 1' >>\$DisableIPv6Conf
+echo 'net.ipv6.conf.default.disable_ipv6 = 1' >>\$DisableIPv6Conf
+
+sysctl --system
+sysctl -p
+
+sysctl -a | grep -ie "local_port" -ie "ipv6" | sort
 
 #-------------------------------------------------------------------------------
 # Reboot

@@ -37,12 +37,12 @@ variable "instance_shape_x86" {
 
 variable "instance_ocpus_x86" {
   # VM.Standard.E2.1.Micro: 1(实际上是1/8)
-  default = 1 
+  default = 1
 }
 
-variable "instance_shape_config_memory_in_gbs_x86" { 
+variable "instance_shape_config_memory_in_gbs_x86" {
   # VM.Standard.E2.1.Micro: 1
-  default = 1 
+  default = 1
 }
 
 # AlwayFree: 基于 ARM 的 Ampere A1 内核和 24 GB 内存，最多 4 个虚机
@@ -57,10 +57,14 @@ variable "instance_shape_arm" {
 
 variable "instance_ocpus_arm" {
   # VM.Standard.A1.Flex: 1
-  default = 1 
+  default = 1
 }
 
-variable "instance_shape_config_memory_in_gbs_arm" { 
+variable "instance_shape_config_memory_in_gbs_arm" {
   # VM.Standard.A1.Flex: 6
   default = 6
+}
+
+variable "tailscale_authkey" {
+  description = "Tailscale Authkey. Will expires after 90 days"
 }

@@ -254,7 +254,7 @@ resource "oci_core_instance" "free_instance_x86" {
 
   metadata = {
     ssh_authorized_keys = (var.ssh_public_key != "") ? var.ssh_public_key : tls_private_key.compute_ssh_key.public_key_openssh
-    user_data           = base64encode(data.template_file.user_data)
+    user_data           = base64encode(data.template_file.user_data.rendered)
   }
 }
 

@@ -217,6 +217,15 @@ resource "oci_core_security_list" "test_security_list" {
   }
 }
 
+# user data
+# https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file
+data "template_file" "user_data" {
+  template = file("./userdata/bootstrap.tpl")
+  vars = {
+    tailscale_authkey = var.tailscale_authkey
+  }
+}
+
 /* Instances */
 
 resource "oci_core_instance" "free_instance_x86" {
@@ -245,6 +254,7 @@ resource "oci_core_instance" "free_instance_x86" {
 
   metadata = {
     ssh_authorized_keys = (var.ssh_public_key != "") ? var.ssh_public_key : tls_private_key.compute_ssh_key.public_key_openssh
+    user_data           = base64encode(data.template_file.user_data)
   }
 }
 
@@ -274,6 +284,7 @@ resource "oci_core_instance" "free_instance_x86" {
 
 #   metadata = {
 #     ssh_authorized_keys = (var.ssh_public_key != "") ? var.ssh_public_key : tls_private_key.compute_ssh_key.public_key_openssh
+#     user_data           = base64encode(data.template_file.user_data)
 #   }
 # }
 

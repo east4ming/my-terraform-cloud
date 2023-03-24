@@ -10,10 +10,6 @@ Terraform 代码用于创建一个资源管理器堆栈，创建所需的资源�
 
 当你在 Terraform Cloud 上建立一个工作空间时，你可以链接到这个资源库。然后，Terraform 云可以在变化被推送时自动运行`terraform plan`和`terraform apply`。关于 Terraform Cloud 如何与版本控制系统互动的更多信息，请参阅 [我们的 VCS 文档](https://www.terraform.io/docs/cloud/run/ui.html)。
 
-## Magic Button
-
-[![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/oracle/terraform-provider-oci/raw/master/examples/zips/always_free.zip)
-
 ## TODO
 
 - [x] 申请 2 台 amd 1C 1G 机器
@@ -30,7 +26,11 @@ Terraform 代码用于创建一个资源管理器堆栈，创建所需的资源�
    9. UDP: 3478(tailscale)
    10. TCP : 50051? (暂不加)
    11. TCP : 30723? (暂不加)
-- [ ] 安装 tailscale
+- [x] 安装 tailscale
+- [x] 安装 docker & docker compose
+- [x] 安装 nomad
+- [x] 安装 k3s
+- [ ] 系统参数调优
 - [ ] 申请 4 台 arm 1c 6G 机器
    1. 2台挂 100GB 存储
    2. 另外2台不挂外部存储

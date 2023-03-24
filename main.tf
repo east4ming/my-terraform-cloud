@@ -232,7 +232,7 @@ resource "oci_core_instance" "free_instance_x86" {
   count               = var.instance_nums_x86
   availability_domain = data.oci_identity_availability_domain.ad.name
   compartment_id      = var.compartment_ocid
-  display_name        = "freeInstanceX86${count.index}"
+  display_name        = "oci-free-x86-${count.index}"
   shape               = var.instance_shape_x86
 
   shape_config {
@@ -244,7 +244,7 @@ resource "oci_core_instance" "free_instance_x86" {
     subnet_id        = oci_core_subnet.test_subnet.id
     display_name     = "primaryvnic"
     assign_public_ip = true
-    hostname_label   = "freeinstancex86${count.index}"
+    hostname_label   = "oci-free-x86-${count.index}"
   }
 
   source_details {
@@ -262,7 +262,7 @@ resource "oci_core_instance" "free_instance_x86" {
 #   count               = var.instance_nums_arm
 #   availability_domain = data.oci_identity_availability_domain.ad.name
 #   compartment_id      = var.compartment_ocid
-#   display_name        = "freeInstanceArm${count.index}"
+#   display_name        = "oci-free-arm-${count.index}"
 #   shape               = var.instance_shape_arm
 
 #   shape_config {
@@ -274,7 +274,7 @@ resource "oci_core_instance" "free_instance_x86" {
 #     subnet_id        = oci_core_subnet.test_subnet.id
 #     display_name     = "primaryvnic"
 #     assign_public_ip = true
-#     hostname_label   = "freeinstancearm${count.index}"
+#     hostname_label   = "oci-free-arm-${count.index}"
 #   }
 
 #   source_details {

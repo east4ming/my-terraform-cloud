@@ -13,7 +13,7 @@ if [ -f /tmp/userdata-parameter ]; then
     source /tmp/userdata-parameter
 fi
 
-if [[ -z "${Language}" || -z "${Timezone}" || -z "${VpcNetwork}" ]]; then
+if [[ -z "\${Language}" || -z "\${Timezone}" || -z "\${VpcNetwork}" ]]; then
     # Default Language
     Language="en_US.UTF-8"
     # Default Timezone
@@ -23,9 +23,9 @@ if [[ -z "${Language}" || -z "${Timezone}" || -z "${VpcNetwork}" ]]; then
 fi
 
 # echo
-echo $Language
-echo $Timezone
-echo $VpcNetwork
+echo \$Language
+echo \$Timezone
+echo \$VpcNetwork
 
 #-------------------------------------------------------------------------------
 # Parameter Settings
@@ -60,7 +60,7 @@ export DEBIAN_FRONTEND=noninteractive
 apt clean -y -q
 
 # Show Linux Distribution/Distro information
-if [ $(command -v lsb_release) ]; then
+if [ \$(command -v lsb_release) ]; then
     lsb_release -a
 fi
 
@@ -143,7 +143,7 @@ ansible localhost -m setup
 curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
 
 # Add the HashiCorp Linux Repository
-apt-add-repository "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+apt-add-repository "deb [arch=\$(dpkg --print-architecture)] https://apt.releases.hashicorp.com \$(lsb_release -cs) main"
 
 # apt repository metadata Clean up
 apt clean -y
@@ -160,7 +160,7 @@ terraform version
 
 ## terraform -install-autocomplete
 cat >/etc/profile.d/terraform.sh <<__EOF__
-if [ -n "\$BASH_VERSION" ]; then
+if [ -n "\\$BASH_VERSION" ]; then
    complete -C /usr/bin/terraform terraform
 fi
 __EOF__
@@ -175,7 +175,7 @@ source /etc/profile.d/terraform.sh
 apt update -y -q && apt install -y -q nomad
 
 # Nomad Install CNI plugins
-curl -L -o cni-plugins.tgz "https://github.com/containernetworking/plugins/releases/download/v1.0.0/cni-plugins-linux-$([ $(uname -m) = aarch64 ] && echo arm64 || echo amd64)"-v1.0.0.tgz &&
+curl -L -o cni-plugins.tgz "https://github.com/containernetworking/plugins/releases/download/v1.0.0/cni-plugins-linux-\$([ \$(uname -m) = aarch64 ] && echo arm64 || echo amd64)"-v1.0.0.tgz &&
     mkdir -p /opt/cni/bin &&
     tar -C /opt/cni/bin -xzf cni-plugins.tgz
 # Nomad sysctl tuning
@@ -206,7 +206,7 @@ curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/jammy.noarmor.gpg | tee /usr
 curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/jammy.tailscale-keyring.list | tee /etc/apt/sources.list.d/tailscale.list
 apt update -y -q && apt install -y -q tailscale
 # Expires Jun 22, 2023 at 3:46 PM GMT+8
-tailscale up --ssh --authkey="${tailscale_authkey}"
+tailscale up --ssh --authkey=${tailscale_authkey}
 tailscale ip -4
 
 #-------------------------------------------------------------------------------
@@ -264,8 +264,8 @@ ip addr show
 ip route show
 
 # Network Information(Firewall Service) [Uncomplicated firewall]
-if [ $(command -v ufw) ]; then
-    if [ $(systemctl is-enabled ufw) = "enabled" ]; then
+if [ \$(command -v ufw) ]; then
+    if [ \$(systemctl is-enabled ufw) = "enabled" ]; then
         # Network Information(Firewall Service Status) [ufw status]
         ufw status verbose
 
@@ -280,8 +280,8 @@ if [ $(command -v ufw) ]; then
 fi
 
 # Linux Security Information(AppArmor)
-if [ $(command -v aa-status) ]; then
-    if [ $(systemctl is-enabled apparmor) = "enabled" ]; then
+if [ \$(command -v aa-status) ]; then
+    if [ \$(systemctl is-enabled apparmor) = "enabled" ]; then
         # Linux Security Information(AppArmor) [aa-status]
         aa-status
     fi
@@ -303,7 +303,7 @@ systemctl restart tuned
 systemctl status -l tuned
 
 # Configure Tuned software (Start Daemon tuned)
-if [ $(systemctl is-enabled tuned) = "disabled" ]; then
+if [ \$(systemctl is-enabled tuned) = "disabled" ]; then
     systemctl enable tuned
     systemctl is-enabled tuned
 fi
@@ -331,7 +331,7 @@ systemctl restart acpid
 systemctl status -l acpid
 
 # Configure NTP Client software (Start Daemon chronyd)
-if [ $(systemctl is-enabled acpid) = "disabled" ]; then
+if [ \$(systemctl is-enabled acpid) = "disabled" ]; then
     systemctl enable acpid
     systemctl is-enabled acpid
 fi
@@ -363,16 +363,16 @@ systemctl daemon-reload
 #-------------------------------------------------------------------------------
 
 # Setting SystemClock and Timezone
-if [ "${Timezone}" = "Asia/Tokyo" ]; then
-    echo "# Setting SystemClock and Timezone -> $Timezone"
+if [ "\${Timezone}" = "Asia/Tokyo" ]; then
+    echo "# Setting SystemClock and Timezone -> \$Timezone"
     date
     timedatectl status --no-pager
     timedatectl set-timezone Asia/Tokyo
     timedatectl status --no-pager
     dpkg-reconfigure --frontend noninteractive tzdata
     date
-elif [ "${Timezone}" = "UTC" ]; then
-    echo "# Setting SystemClock and Timezone -> $Timezone"
+elif [ "\${Timezone}" = "UTC" ]; then
+    echo "# Setting SystemClock and Timezone -> \$Timezone"
     date
     timedatectl status --no-pager
     timedatectl set-timezone UTC
@@ -388,11 +388,11 @@ else
 fi
 
 # Setting System Language
-if [ "${Language}" = "ja_JP.UTF-8" ]; then
+if [ "\${Language}" = "ja_JP.UTF-8" ]; then
     # Custom Package Installation [language-pack-ja]
     apt install -y -q language-pack-ja-base language-pack-ja fonts-ipafont
 
-    echo "# Setting System Language -> $Language"
+    echo "# Setting System Language -> \$Language"
     locale
     localectl status --no-pager
     localectl list-locales --no-pager | grep ja_
@@ -402,8 +402,8 @@ if [ "${Language}" = "ja_JP.UTF-8" ]; then
     locale
     strings /etc/default/locale
     source /etc/default/locale
-elif [ "${Language}" = "en_US.UTF-8" ]; then
-    echo "# Setting System Language -> $Language"
+elif [ "\${Language}" = "en_US.UTF-8" ]; then
+    echo "# Setting System Language -> \$Language"
     locale
     localectl status --no-pager
     localectl list-locales --no-pager | grep en_
@@ -421,8 +421,8 @@ else
 fi
 
 # Setting IP Protocol Stack (IPv4 Only) or (IPv4/IPv6 Dual stack)
-if [ "${VpcNetwork}" = "IPv4" ]; then
-    echo "# Setting IP Protocol Stack -> $VpcNetwork"
+if [ "\${VpcNetwork}" = "IPv4" ]; then
+    echo "# Setting IP Protocol Stack -> \$VpcNetwork"
 
     # Disable IPv6 Uncomplicated Firewall (ufw)
     if [ -e /etc/default/ufw ]; then
@@ -437,21 +437,21 @@ if [ "${VpcNetwork}" = "IPv4" ]; then
 
     DisableIPv6Conf="/etc/sysctl.d/99-ipv6-disable.conf"
 
-    cat /dev/null >$DisableIPv6Conf
-    echo '# Custom sysctl Parameter for ipv6 disable' >>$DisableIPv6Conf
-    echo 'net.ipv6.conf.all.disable_ipv6 = 1' >>$DisableIPv6Conf
-    echo 'net.ipv6.conf.default.disable_ipv6 = 1' >>$DisableIPv6Conf
+    cat /dev/null >\$DisableIPv6Conf
+    echo '# Custom sysctl Parameter for ipv6 disable' >>\$DisableIPv6Conf
+    echo 'net.ipv6.conf.all.disable_ipv6 = 1' >>\$DisableIPv6Conf
+    echo 'net.ipv6.conf.default.disable_ipv6 = 1' >>\$DisableIPv6Conf
 
     sysctl --system
     sysctl -p
 
     sysctl -a | grep -ie "local_port" -ie "ipv6" | sort
-elif [ "${VpcNetwork}" = "IPv6" ]; then
-    echo "# Show IP Protocol Stack -> $VpcNetwork"
+elif [ "\${VpcNetwork}" = "IPv6" ]; then
+    echo "# Show IP Protocol Stack -> \$VpcNetwork"
     echo "# Show IPv6 Network Interface Address"
     ifconfig
     echo "# Show IPv6 Kernel Module"
-    lsmod | awk '{print $1}' | grep ipv6
+    lsmod | awk '{print \$1}' | grep ipv6
     echo "# Show Network Listen Address and report"
     netstat -an -A inet6
     echo "# Show Network Routing Table"
@@ -461,7 +461,7 @@ else
     echo "# Show IPv6 Network Interface Address"
     ifconfig
     echo "# Show IPv6 Kernel Module"
-    lsmod | awk '{print $1}' | grep ipv6
+    lsmod | awk '{print \$1}' | grep ipv6
     echo "# Show Network Listen Address and report"
     netstat -an -A inet6
     echo "# Show Network Routing Table"

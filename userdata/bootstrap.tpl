@@ -46,7 +46,7 @@ export DEBIAN_FRONTEND=noninteractive
 apt clean -y -q
 
 # Show Linux Distribution/Distro information
-if [ \$(command -v lsb_release) ]; then
+if [ $(command -v lsb_release) ]; then
     lsb_release -a
 fi
 
@@ -129,7 +129,7 @@ ansible localhost -m setup
 curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
 
 # Add the HashiCorp Linux Repository
-apt-add-repository "deb [arch=\$(dpkg --print-architecture)] https://apt.releases.hashicorp.com \$(lsb_release -cs) main"
+apt-add-repository "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
 
 # apt repository metadata Clean up
 apt clean -y
@@ -146,7 +146,7 @@ terraform version
 
 ## terraform -install-autocomplete
 cat >/etc/profile.d/terraform.sh <<__EOF__
-if [ -n "\\$BASH_VERSION" ]; then
+if [ -n "\$BASH_VERSION" ]; then
    complete -C /usr/bin/terraform terraform
 fi
 __EOF__
@@ -161,7 +161,7 @@ source /etc/profile.d/terraform.sh
 apt update -y -q && apt install -y -q nomad
 
 # Nomad Install CNI plugins
-curl -L -o cni-plugins.tgz "https://github.com/containernetworking/plugins/releases/download/v1.0.0/cni-plugins-linux-\$([ \$(uname -m) = aarch64 ] && echo arm64 || echo amd64)"-v1.0.0.tgz &&
+curl -L -o cni-plugins.tgz "https://github.com/containernetworking/plugins/releases/download/v1.0.0/cni-plugins-linux-$([ $(uname -m) = aarch64 ] && echo arm64 || echo amd64)"-v1.0.0.tgz &&
     mkdir -p /opt/cni/bin &&
     tar -C /opt/cni/bin -xzf cni-plugins.tgz
 # Nomad sysctl tuning
@@ -250,8 +250,8 @@ ip addr show
 ip route show
 
 # Network Information(Firewall Service) [Uncomplicated firewall]
-if [ \$(command -v ufw) ]; then
-    if [ \$(systemctl is-enabled ufw) = "enabled" ]; then
+if [ $(command -v ufw) ]; then
+    if [ $(systemctl is-enabled ufw) = "enabled" ]; then
         # Network Information(Firewall Service Status) [ufw status]
         ufw status verbose
 
@@ -281,7 +281,7 @@ systemctl restart tuned
 systemctl status -l tuned
 
 # Configure Tuned software (Start Daemon tuned)
-if [ \$(systemctl is-enabled tuned) = "disabled" ]; then
+if [ $(systemctl is-enabled tuned) = "disabled" ]; then
     systemctl enable tuned
     systemctl is-enabled tuned
 fi
@@ -309,7 +309,7 @@ systemctl restart acpid
 systemctl status -l acpid
 
 # Configure NTP Client software (Start Daemon chronyd)
-if [ \$(systemctl is-enabled acpid) = "disabled" ]; then
+if [ $(systemctl is-enabled acpid) = "disabled" ]; then
     systemctl enable acpid
     systemctl is-enabled acpid
 fi
@@ -377,10 +377,10 @@ sysctl -a
 
 DisableIPv6Conf="/etc/sysctl.d/99-ipv6-disable.conf"
 
-cat /dev/null >\$DisableIPv6Conf
-echo '# Custom sysctl Parameter for ipv6 disable' >>\$DisableIPv6Conf
-echo 'net.ipv6.conf.all.disable_ipv6 = 1' >>\$DisableIPv6Conf
-echo 'net.ipv6.conf.default.disable_ipv6 = 1' >>\$DisableIPv6Conf
+cat /dev/null >$DisableIPv6Conf
+echo '# Custom sysctl Parameter for ipv6 disable' >>$DisableIPv6Conf
+echo 'net.ipv6.conf.all.disable_ipv6 = 1' >>$DisableIPv6Conf
+echo 'net.ipv6.conf.default.disable_ipv6 = 1' >>$DisableIPv6Conf
 
 sysctl --system
 sysctl -p

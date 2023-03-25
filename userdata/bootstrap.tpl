@@ -82,7 +82,7 @@ apt update -y -q
 
 # Uninstalling the Oracle Cloud Agent
 # https://docs.oracle.com/en-us/iaas/Content/Compute/Tasks/manage-plugins.htm
-apt remove -y -q oracle-cloud-agent
+snap remove oracle-cloud-agent --purge
 
 # Package Install Ubuntu apt Administration Tools (from Ubuntu Official Repository)
 apt install -y -q apt-transport-https ca-certificates curl gnupg-agent software-properties-common

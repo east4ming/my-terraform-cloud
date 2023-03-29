@@ -95,7 +95,7 @@ apt update -y -q && apt upgrade -y -q && apt full-upgrade -y -q
 #-------------------------------------------------------------------------------
 
 # Package Install Ubuntu System Administration Tools (from Ubuntu Official Repository)
-apt install -y -q acpid acpitool arptables atop bash-completion bcc bcftools binutils blktrace bpfcc-tools byobu chrony collectd collectl colordiff crash cryptol curl dateutils debian-goodies dstat ebtables ethtool expect file fio fping fzf gdisk git glances hardinfo hdparm htop httpie httping iftop inotify-tools intltool iotop ipcalc iperf3 iptraf-ng ipv6calc ipv6toolkit jc jnettop jp jq kexec-tools lsb-release lsof lvm2 lzop manpages mc mdadm mlocate moreutils mtr ncdu ncompress needrestart netcat net-tools netsniff-ng nftables nload nmap numactl numatop nvme-cli parted psmisc python3-bpfcc rsync rsyncrypto screen secure-delete shellcheck snmp sosreport strace stressapptest symlinks sysfsutils sysstat tcpdump time timelimit traceroute tree tzdata unzip usermode util-linux wdiff wget zip zsh zstd
+apt install -y -q acpid acpitool arptables atop bash-completion bcc bcftools binutils blktrace bpfcc-tools byobu chrony collectd collectl colordiff crash cryptol curl dateutils debian-goodies dstat ebtables ethtool expect file fio fonts-powerline fping fzf gdisk git glances hardinfo hdparm htop httpie httping iftop inotify-tools intltool iotop ipcalc iperf3 iptraf-ng ipv6calc ipv6toolkit jc jnettop jp jq kexec-tools lsb-release lsof lvm2 lzop manpages mc mdadm mlocate moreutils mtr ncdu ncompress needrestart netcat net-tools netsniff-ng nftables nload nmap numactl numatop nvme-cli parted powerline psmisc python3-bpfcc rsync rsyncrypto screen secure-delete shellcheck snmp sosreport strace stressapptest symlinks sysfsutils sysstat tcpdump time timelimit traceroute tree tzdata unzip usermode util-linux wdiff wget zip zsh zsh-autosuggestions zsh-common zsh-static zsh-syntax-highlighting zstd
 apt install -y -q cifs-utils nfs-common nfs4-acl-tools nfstrace nfswatch
 apt install -y -q libiscsi-bin lsscsi scsitools sdparm sg3-utils
 # apparmor用途类似 Selinux
@@ -104,6 +104,13 @@ apt install -y -q pcp pcp-conf pcp-manager
 
 # Package Install Python 3 Runtime (from Ubuntu Official Repository)
 apt install -y -q python3 python3-pip python3-setuptools python3-testtools python3-ubuntutools python3-wheel
+
+#-------------------------------------------------------------------------------
+# Use zsh
+#
+#-------------------------------------------------------------------------------
+
+chsh -s $(which zsh)
 
 #-------------------------------------------------------------------------------
 # Custom Package Installation [Ansible]
@@ -141,6 +148,8 @@ apt update -y -q && apt install -y -q terraform
 apt show terraform
 
 terraform version
+
+terraform -install-autocomplete
 
 # Configure terraform software
 

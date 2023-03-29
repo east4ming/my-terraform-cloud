@@ -204,19 +204,6 @@ tailscale ip -4
 curl -sfL https://get.k3s.io | INSTALL_K3S_SKIP_ENABLE=true INSTALL_K3S_SKIP_START=true INSTALL_K3S_VERSION=v1.23.17+k3s1 sh -
 
 #-------------------------------------------------------------------------------
-# Custom Package Clean up
-#-------------------------------------------------------------------------------
-
-# apt repository metadata Clean up
-apt clean -y -q
-
-# Default Package Update
-apt update -y -q && apt upgrade -y -q && apt full-upgrade -y -q
-
-# Clean up package
-apt autoremove -y -q
-
-#-------------------------------------------------------------------------------
 # System information collection
 #-------------------------------------------------------------------------------
 
@@ -386,6 +373,19 @@ sysctl --system
 sysctl -p
 
 sysctl -a | grep -ie "local_port" -ie "ipv6" | sort
+
+#-------------------------------------------------------------------------------
+# Custom Package Clean up
+#-------------------------------------------------------------------------------
+
+# apt repository metadata Clean up
+apt clean -y -q
+
+# Default Package Update
+apt update -y -q && apt upgrade -y -q && apt full-upgrade -y -q
+
+# Clean up package
+apt autoremove -y -q
 
 #-------------------------------------------------------------------------------
 # Reboot

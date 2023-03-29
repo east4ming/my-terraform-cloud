@@ -30,6 +30,7 @@ Terraform 代码用于创建一个资源管理器堆栈，创建所需的资源�
 - [x] 安装 docker & docker compose
 - [x] 安装 nomad
 - [x] 安装 k3s
+- [ ] Cloud Init 修改用户名等基本属性
 - [ ] 系统参数调优
 - [ ] 申请 4 台 arm 1c 6G 机器
    1. 2台挂 100GB 存储

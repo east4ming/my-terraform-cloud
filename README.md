@@ -31,8 +31,8 @@ Terraform 代码用于创建一个资源管理器堆栈，创建所需的资源�
 - [x] 安装 nomad
 - [x] 安装 k3s
 - [ ] Cloud Init 修改用户名等基本属性
-  - [ ] 用户: casey; groups: adm,cdrom,sudo,dip,plugdev; sudo nopassword; 
-- [ ] 系统参数调优
+  - [ ] 用户: casey; groups: adm,cdrom,sudo,dip,plugdev; sudo nopassword;
+- [x] 系统参数调优
 - [ ] 申请 4 台 arm 1c 6G 机器
    1. 2台挂 100GB 存储
    2. 另外2台不挂外部存储
@@ -40,3 +40,20 @@ Terraform 代码用于创建一个资源管理器堆栈，创建所需的资源�
 ## 📝备忘
 
 - Cloud Init 脚本位于: `/var/lib/cloud/instance/scripts`
+- Cloud Init 配置位于: `/etc/cloud/`
+- MetaData: `http://169.254.169.254/opc/v2/instance/`
+
+查看 Metadata 示例:
+
+```bash
+curl -H "Authorization: Bearer Oracle" http://169.254.169.254/opc/v2/instance/
+curl -H "Authorization: Bearer Oracle" http://169.254.169.254/opc/v2/instance/metadata/
+```
+
+获取 metadata init script 并修改的示例:
+
+```bash
+#!/bin/bash
+curl --fail -H "Authorization: Bearer Oracle" -L0 http://169.254.169.254/opc/v2/instance/metadata/oke_init_script | base64 --decode >/var/run/oke-init.sh
+bash /var/run/oke-init.sh --kubelet-extra-args "--v=4"
+```

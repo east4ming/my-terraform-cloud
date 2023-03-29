@@ -95,7 +95,7 @@ apt update -y -q && apt upgrade -y -q && apt full-upgrade -y -q
 #-------------------------------------------------------------------------------
 
 # Package Install Ubuntu System Administration Tools (from Ubuntu Official Repository)
-apt install -y -q acpid acpitool arptables atop bash-completion bcc bcftools binutils blktrace bpfcc-tools byobu chrony collectd collectl colordiff crash cryptol curl dateutils debian-goodies dstat ebtables ethtool expect file fio fping fzf gdisk git glances hardinfo hdparm htop httping iftop inotify-tools intltool iotop ipcalc iperf3 iptraf-ng ipv6calc ipv6toolkit jc jnettop jp jq kexec-tools lsb-release lsof lvm2 lzop manpages mc mdadm mlocate moreutils mtr ncdu ncompress needrestart netcat netsniff-ng nftables nload nmap numactl numatop nvme-cli parted psmisc python3-bpfcc rsync rsyncrypto screen secure-delete shellcheck snmp sosreport strace stressapptest symlinks sysfsutils sysstat tcpdump time timelimit traceroute tree tzdata unzip usermode util-linux wdiff wget zip zstd
+apt install -y -q acpid acpitool arptables atop bash-completion bcc bcftools binutils blktrace bpfcc-tools byobu chrony collectd collectl colordiff crash cryptol curl dateutils debian-goodies dstat ebtables ethtool expect file fio fping fzf gdisk git glances hardinfo hdparm htop httpie httping iftop inotify-tools intltool iotop ipcalc iperf3 iptraf-ng ipv6calc ipv6toolkit jc jnettop jp jq kexec-tools lsb-release lsof lvm2 lzop manpages mc mdadm mlocate moreutils mtr ncdu ncompress needrestart netcat netsniff-ng nftables nload nmap numactl numatop nvme-cli parted psmisc python3-bpfcc rsync rsyncrypto screen secure-delete shellcheck snmp sosreport strace stressapptest symlinks sysfsutils sysstat tcpdump time timelimit traceroute tree tzdata unzip usermode util-linux wdiff wget zip zstd
 apt install -y -q cifs-utils nfs-common nfs4-acl-tools nfstrace nfswatch
 apt install -y -q libiscsi-bin lsscsi scsitools sdparm sg3-utils
 # apparmor用途类似 Selinux
@@ -202,6 +202,15 @@ tailscale ip -4
 
 # 1.24 后内存使用量增加
 curl -sfL https://get.k3s.io | INSTALL_K3S_SKIP_ENABLE=true INSTALL_K3S_SKIP_START=true INSTALL_K3S_VERSION=v1.23.17+k3s1 sh -
+
+#-------------------------------------------------------------------------------
+# Custom Package Installation [Starship]
+# https://starship.rs/zh-CN/guide/#%F0%9F%9A%80-%E5%AE%89%E8%A3%85
+#-------------------------------------------------------------------------------
+
+curl -sS https://starship.rs/install.sh | sh
+echo 'eval "$(starship init bash)"' >>/home/casey/.bashrc
+echo 'eval "$(starship init zsh)"' >>/home/casey/.zshrc || echo 'starship init zsh failed'
 
 #-------------------------------------------------------------------------------
 # System information collection
@@ -373,6 +382,20 @@ sysctl --system
 sysctl -p
 
 sysctl -a | grep -ie "local_port" -ie "ipv6" | sort
+
+# nofile and nproc limits
+echo '*        soft            nproc   unlimited' >>/etc/security/limits.conf
+echo '*        hard            nproc   unlimited' >>/etc/security/limits.conf
+echo '*        soft            nofile  65535' >>/etc/security/limits.conf
+echo '*        hard            nofile  65535' >>/etc/security/limits.conf
+
+#-------------------------------------------------------------------------------
+# Git Setting
+#-------------------------------------------------------------------------------
+
+git config --global user.name "east4ming"
+git config --global user.email "cuikaidong@foxmail.com"
+git config --system credential.helper store || echo 'git config credential failed'
 
 #-------------------------------------------------------------------------------
 # Custom Package Clean up

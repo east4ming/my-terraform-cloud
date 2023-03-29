@@ -95,7 +95,7 @@ apt update -y -q && apt upgrade -y -q && apt full-upgrade -y -q
 #-------------------------------------------------------------------------------
 
 # Package Install Ubuntu System Administration Tools (from Ubuntu Official Repository)
-apt install -y -q acpid acpitool arptables atop bash-completion bcc bcftools binutils blktrace bpfcc-tools byobu chrony collectd collectl colordiff crash cryptol curl dateutils debian-goodies dstat ebtables ethtool expect file fio fping fzf gdisk git glances hardinfo hdparm htop httpie httping iftop inotify-tools intltool iotop ipcalc iperf3 iptraf-ng ipv6calc ipv6toolkit jc jnettop jp jq kexec-tools lsb-release lsof lvm2 lzop manpages mc mdadm mlocate moreutils mtr ncdu ncompress needrestart netcat netsniff-ng nftables nload nmap numactl numatop nvme-cli parted psmisc python3-bpfcc rsync rsyncrypto screen secure-delete shellcheck snmp sosreport strace stressapptest symlinks sysfsutils sysstat tcpdump time timelimit traceroute tree tzdata unzip usermode util-linux wdiff wget zip zstd
+apt install -y -q acpid acpitool arptables atop bash-completion bcc bcftools binutils blktrace bpfcc-tools byobu chrony collectd collectl colordiff crash cryptol curl dateutils debian-goodies dstat ebtables ethtool expect file fio fping fzf gdisk git glances hardinfo hdparm htop httpie httping iftop inotify-tools intltool iotop ipcalc iperf3 iptraf-ng ipv6calc ipv6toolkit jc jnettop jp jq kexec-tools lsb-release lsof lvm2 lzop manpages mc mdadm mlocate moreutils mtr ncdu ncompress needrestart netcat net-tools netsniff-ng nftables nload nmap numactl numatop nvme-cli parted psmisc python3-bpfcc rsync rsyncrypto screen secure-delete shellcheck snmp sosreport strace stressapptest symlinks sysfsutils sysstat tcpdump time timelimit traceroute tree tzdata unzip usermode util-linux wdiff wget zip zsh zstd
 apt install -y -q cifs-utils nfs-common nfs4-acl-tools nfstrace nfswatch
 apt install -y -q libiscsi-bin lsscsi scsitools sdparm sg3-utils
 # apparmor用途类似 Selinux
@@ -377,6 +377,24 @@ cat /dev/null >$DisableIPv6Conf
 echo '# Custom sysctl Parameter for ipv6 disable' >>$DisableIPv6Conf
 echo 'net.ipv6.conf.all.disable_ipv6 = 1' >>$DisableIPv6Conf
 echo 'net.ipv6.conf.default.disable_ipv6 = 1' >>$DisableIPv6Conf
+
+echo 'net.ipv4.ip_forward = 1' >>/etc/sysctl.conf
+echo 'net.ipv4.conf.all.proxy_arp = 1' >>/etc/sysctl.conf
+echo 'fs.aio-max-nr = 1048576' >>/etc/sysctl.conf
+echo 'kernel.shmmni = 4096' >>/etc/sysctl.conf
+echo 'kernel.sem = 250 32000 100 128' >>/etc/sysctl.conf
+echo 'fs.file-max = 6815744' >>/etc/sysctl.conf
+echo 'net.ipv4.ip_local_port_range = 20000 65000' >>/etc/sysctl.conf
+echo 'net.core.rmem_default = 262144' >>/etc/sysctl.conf
+echo 'net.core.wmem_default = 262144' >>/etc/sysctl.conf
+echo 'net.core.rmem_max = 4194304' >>/etc/sysctl.conf
+echo 'net.core.wmem_max = 1048576' >>/etc/sysctl.conf
+echo 'vm.overcommit_memory = 1' >>/etc/sysctl.conf
+echo 'vm.dirty_background_ratio = 5' >>/etc/sysctl.conf
+echo 'vm.dirty_ratio = 10' >>/etc/sysctl.conf
+echo 'fs.nr_open = 1048576' >>/etc/sysctl.conf
+echo 'net.ipv4.tcp_max_syn_backlog = 1024' >>/etc/sysctl.conf
+echo 'net.core.somaxconn = 4096' >>/etc/sysctl.conf
 
 sysctl --system
 sysctl -p

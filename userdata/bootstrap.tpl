@@ -200,6 +200,34 @@ apt install -y -q docker-compose-plugin
 curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/jammy.noarmor.gpg | tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
 curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/jammy.tailscale-keyring.list | tee /etc/apt/sources.list.d/tailscale.list
 apt update -y -q && apt install -y -q tailscale
+# Tailscale update weekly
+cat >/etc/systemd/system/tailscale-weekly-update.service <<__EOF__
+[Unit]
+Description=Tailscale node agent
+Wants=tailscale-weekly-update.timer
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/tailscale update -yes
+
+[Install]
+WantedBy=multi-user.target
+__EOF__
+
+cat >/etc/systemd/system/tailscale-weekly-update.timer <<__EOF__
+[Unit]
+Description=Tailscale node agent
+Requires=tailscale-weekly-update.service
+
+[Timer]
+Unit=tailscale-weekly-update.service
+OnCalendar=weekly
+
+[Install]
+WantedBy=timers.target
+__EOF__
+
+systemctl enable tailscale-weekly-update.timer
 # Expires Jun 22, 2023 at 3:46 PM GMT+8
 tailscale up --ssh --authkey=${tailscale_authkey}
 tailscale ip -4

@@ -15,6 +15,8 @@ users:
     lock_passwd: True
     sudo: ["ALL=(ALL) NOPASSWD:ALL"]
     shell: /bin/zsh
+    ssh_authorized_keys: 
+      - ${ssh_authorized_keys}
 
 package_update: true
 package_upgrade: true
@@ -22,7 +24,7 @@ package_upgrade: true
 apt:
   sources:
     hashicorp.list:
-      source: "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com $RELEASE main"
+      source: "deb https://apt.releases.hashicorp.com $RELEASE main"
       key: |
         -----BEGIN PGP PUBLIC KEY BLOCK-----
 

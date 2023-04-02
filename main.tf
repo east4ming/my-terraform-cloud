@@ -223,6 +223,7 @@ data "template_file" "user_data" {
   template = file("./userdata/userdata.yaml.tpl")
   vars = {
     tailscale_authkey = var.tailscale_authkey
+    ssh_authorized_keys = (var.ssh_public_key != "") ? var.ssh_public_key : tls_private_key.compute_ssh_key.public_key_openssh
   }
 }
 

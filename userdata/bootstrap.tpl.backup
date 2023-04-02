@@ -45,31 +45,6 @@ export DEBIAN_FRONTEND=noninteractive
 # Cleanup repository information
 apt clean -y -q
 
-# Show Linux Distribution/Distro information
-if [ $(command -v lsb_release) ]; then
-    lsb_release -a
-fi
-
-# Show Linux System Information
-uname -a
-
-# Show Linux distribution release Information
-if [ -f /etc/os-release ]; then
-    cat "/etc/os-release"
-fi
-
-# Default installation package [apt command]
-apt list --installed >/tmp/command-log_apt_installed-package.txt
-
-# Default repository package [apt command]
-apt list >/tmp/command-log_apt_repository-package-list.txt
-
-# systemd unit files
-systemctl list-unit-files --all --no-pager >/tmp/command-log_systemctl_list-unit-files.txt
-
-# systemd service config
-systemctl list-units --type=service --all --no-pager >/tmp/command-log_systemctl_list-service-config.txt
-
 #-------------------------------------------------------------------------------
 # Default Package Update
 #-------------------------------------------------------------------------------
@@ -121,12 +96,6 @@ apt install -y -q software-properties-common
 
 apt install -y -q ansible
 
-apt show ansible
-
-ansible --version
-
-ansible localhost -m setup
-
 #-------------------------------------------------------------------------------
 # Custom Package Installation [Terraform]
 # https://www.terraform.io/docs/cli/install/apt.html
@@ -143,11 +112,6 @@ apt clean -y
 
 # Update and install Terraform Infrastructure as Code (IaC) Tools (from HashiCorp Linux Repository)
 apt update -y -q && apt install -y -q terraform
-
-# Package Information
-apt show terraform
-
-terraform version
 
 terraform -install-autocomplete
 
@@ -178,8 +142,6 @@ echo 'net.bridge.bridge-nf-call-arptables=1' >>/etc/sysctl.conf
 echo 'net.bridge.bridge-nf-call-ip6tables=1' >>/etc/sysctl.conf
 echo 'net.bridge.bridge-nf-call-iptables=1' >>/etc/sysctl.conf
 
-nomad version
-
 #-------------------------------------------------------------------------------
 # Custom Package Installation [Docker & Docker compose]
 # https://docs.docker.com/engine/install/ubuntu/#install-using-the-convenience-script
@@ -200,6 +162,8 @@ apt install -y -q docker-compose-plugin
 curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/jammy.noarmor.gpg | tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
 curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/jammy.tailscale-keyring.list | tee /etc/apt/sources.list.d/tailscale.list
 apt update -y -q && apt install -y -q tailscale
+# Expires Jun 22, 2023 at 3:46 PM GMT+8
+tailscale up --ssh --authkey=${tailscale_authkey}
 # Tailscale update weekly
 cat >/etc/systemd/system/tailscale-weekly-update.service <<__EOF__
 [Unit]
@@ -228,9 +192,6 @@ WantedBy=timers.target
 __EOF__
 
 systemctl enable tailscale-weekly-update.timer
-# Expires Jun 22, 2023 at 3:46 PM GMT+8
-tailscale up --ssh --authkey=${tailscale_authkey}
-tailscale ip -4
 
 #-------------------------------------------------------------------------------
 # Custom Package Installation [K3s]
@@ -252,35 +213,6 @@ echo 'eval "$(starship init zsh)"' >>/home/casey/.zshrc || echo 'starship init z
 #-------------------------------------------------------------------------------
 # System information collection
 #-------------------------------------------------------------------------------
-
-# CPU Information [cat /proc/cpuinfo]
-cat /proc/cpuinfo
-
-# CPU Information [lscpu]
-lscpu
-
-lscpu --extended
-
-# Memory Information [cat /proc/meminfo]
-cat /proc/meminfo
-
-# Memory Information [free]
-free
-
-# Disk Information(Partition) [parted -l]
-parted -l
-
-# Disk Information(MountPoint) [lsblk -f]
-lsblk -f
-
-# Disk Information(File System) [df -khT]
-df -khT
-
-# Network Information(Network Interface) [ip addr show]
-ip addr show
-
-# Network Information(Routing Table) [ip route show]
-ip route show
 
 # Network Information(Firewall Service) [Uncomplicated firewall]
 if [ $(command -v ufw) ]; then
@@ -305,13 +237,9 @@ fi
 # Package Install Tuned
 apt install -y -q tuned tuned-utils
 
-apt show tuned
-
 systemctl daemon-reload
 
 systemctl restart tuned
-
-systemctl status -l tuned
 
 # Configure Tuned software (Start Daemon tuned)
 if [ $(systemctl is-enabled tuned) = "disabled" ]; then
@@ -333,15 +261,10 @@ tuned-adm active
 # Configure ACPI daemon software (Install acpid Package)
 apt install -y -q acpid acpitool
 
-apt show acpid
-
 systemctl daemon-reload
 
 systemctl restart acpid
 
-systemctl status -l acpid
-
-# Configure NTP Client software (Start Daemon chronyd)
 if [ $(systemctl is-enabled acpid) = "disabled" ]; then
     systemctl enable acpid
     systemctl is-enabled acpid
@@ -352,22 +275,22 @@ fi
 #-------------------------------------------------------------------------------
 
 # Configure Disable automatic processing (apt-daily.timer)
-systemctl cat apt-daily.timer
+# systemctl cat apt-daily.timer
 
-sed -i 's/Persistent=true/Persistent=false/g' /lib/systemd/system/apt-daily.timer
+# sed -i 's/Persistent=true/Persistent=false/g' /lib/systemd/system/apt-daily.timer
 
-systemctl cat apt-daily.timer
+# systemctl cat apt-daily.timer
 
-systemctl daemon-reload
+# systemctl daemon-reload
 
-# Configure Disable automatic processing (apt-daily-upgrade.timer)
-systemctl cat apt-daily-upgrade.timer
+# # Configure Disable automatic processing (apt-daily-upgrade.timer)
+# systemctl cat apt-daily-upgrade.timer
 
-sed -i 's/Persistent=true/Persistent=false/g' /lib/systemd/system/apt-daily-upgrade.timer
+# sed -i 's/Persistent=true/Persistent=false/g' /lib/systemd/system/apt-daily-upgrade.timer
 
-systemctl cat apt-daily-upgrade.timer
+# systemctl cat apt-daily-upgrade.timer
 
-systemctl daemon-reload
+# systemctl daemon-reload
 
 #-------------------------------------------------------------------------------
 # System Setting
@@ -375,22 +298,13 @@ systemctl daemon-reload
 
 # Setting SystemClock and Timezone
 echo "# Setting SystemClock and Timezone -> Asia/Tokyo"
-date
-timedatectl status --no-pager
 timedatectl set-timezone Asia/Tokyo
-timedatectl status --no-pager
 dpkg-reconfigure --frontend noninteractive tzdata
-date
 
 # Setting System Language
 echo "# Setting System Language -> en_US.UTF-8"
-locale
-localectl status --no-pager
-localectl list-locales --no-pager | grep en_
 localectl set-locale LANG=en_US.UTF-8
 dpkg-reconfigure --frontend noninteractive locales
-localectl status --no-pager
-locale
 strings /etc/default/locale
 source /etc/default/locale
 

@@ -220,7 +220,7 @@ resource "oci_core_security_list" "test_security_list" {
 # user data
 # https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file
 data "template_file" "user_data" {
-  template = file("./userdata/bootstrap.tpl")
+  template = file("./userdata/userdata.yaml.tpl")
   vars = {
     tailscale_authkey = var.tailscale_authkey
   }

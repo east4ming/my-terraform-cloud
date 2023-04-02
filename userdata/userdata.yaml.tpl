@@ -6,7 +6,7 @@ merge_how:
    settings: [no_replace, recurse_list]
 
 timezone: Asia/Tokyo
-locale: en_US
+locale: en_US.UTF-8
 
 users:
   - name: casey
@@ -112,7 +112,6 @@ packages:
   - curl
   - dateutils
   - debian-goodies
-  - dstat
   - ebtables
   - ethtool
   - expect

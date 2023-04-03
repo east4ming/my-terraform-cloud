@@ -222,7 +222,7 @@ resource "oci_core_security_list" "test_security_list" {
 data "template_file" "user_data" {
   template = file("./userdata/userdata.yaml.tpl")
   vars = {
-    tailscale_authkey = var.tailscale_authkey
+    tailscale_authkey   = var.tailscale_authkey
     ssh_authorized_keys = (var.ssh_public_key != "") ? var.ssh_public_key : tls_private_key.compute_ssh_key.public_key_openssh
   }
 }
@@ -259,35 +259,35 @@ resource "oci_core_instance" "free_instance_x86" {
   }
 }
 
-# resource "oci_core_instance" "free_instance_arm" {
-#   count               = var.instance_nums_arm
-#   availability_domain = data.oci_identity_availability_domain.ad.name
-#   compartment_id      = var.compartment_ocid
-#   display_name        = "oci-free-arm-${count.index}"
-#   shape               = var.instance_shape_arm
+resource "oci_core_instance" "free_instance_arm" {
+  count               = var.instance_nums_arm
+  availability_domain = data.oci_identity_availability_domain.ad.name
+  compartment_id      = var.compartment_ocid
+  display_name        = "oci-free-arm-${count.index}"
+  shape               = var.instance_shape_arm
 
-#   shape_config {
-#     ocpus         = var.instance_ocpus_arm
-#     memory_in_gbs = var.instance_shape_config_memory_in_gbs_arm
-#   }
+  shape_config {
+    ocpus         = var.instance_ocpus_arm
+    memory_in_gbs = var.instance_shape_config_memory_in_gbs_arm
+  }
 
-#   create_vnic_details {
-#     subnet_id        = oci_core_subnet.test_subnet.id
-#     display_name     = "primaryvnic"
-#     assign_public_ip = true
-#     hostname_label   = "oci-free-arm-${count.index}"
-#   }
+  create_vnic_details {
+    subnet_id        = oci_core_subnet.test_subnet.id
+    display_name     = "primaryvnic"
+    assign_public_ip = true
+    hostname_label   = "oci-free-arm-${count.index}"
+  }
 
-#   source_details {
-#     source_type = "image"
-#     source_id   = lookup(data.oci_core_images.test_images_arm.images[0], "id")
-#   }
+  source_details {
+    source_type = "image"
+    source_id   = lookup(data.oci_core_images.test_images_arm.images[0], "id")
+  }
 
-#   metadata = {
-#     ssh_authorized_keys = (var.ssh_public_key != "") ? var.ssh_public_key : tls_private_key.compute_ssh_key.public_key_openssh
-#     user_data           = base64encode(data.template_file.user_data)
-#   }
-# }
+  metadata = {
+    ssh_authorized_keys = (var.ssh_public_key != "") ? var.ssh_public_key : tls_private_key.compute_ssh_key.public_key_openssh
+    user_data           = base64encode(data.template_file.user_data)
+  }
+}
 
 resource "tls_private_key" "compute_ssh_key" {
   algorithm = "RSA"
@@ -338,14 +338,14 @@ resource "oci_load_balancer_backend" "free_load_balancer_test_backend_x86" {
   port             = "80"
 }
 
-# resource "oci_load_balancer_backend" "free_load_balancer_test_backend_arm" {
-#   #Required
-#   count            = length(oci_core_instance.free_instance_arm)
-#   backendset_name  = oci_load_balancer_backend_set.free_load_balancer_backend_set.name
-#   ip_address       = oci_core_instance.free_instance_arm[count.index].private_ip
-#   load_balancer_id = oci_load_balancer_load_balancer.free_load_balancer.id
-#   port             = "80"
-# }
+resource "oci_load_balancer_backend" "free_load_balancer_test_backend_arm" {
+  #Required
+  count            = length(oci_core_instance.free_instance_arm)
+  backendset_name  = oci_load_balancer_backend_set.free_load_balancer_backend_set.name
+  ip_address       = oci_core_instance.free_instance_arm[count.index].private_ip
+  load_balancer_id = oci_load_balancer_load_balancer.free_load_balancer.id
+  port             = "80"
+}
 
 resource "oci_load_balancer_hostname" "test_hostname1" {
   #Required

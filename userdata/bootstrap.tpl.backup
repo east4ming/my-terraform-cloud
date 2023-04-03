@@ -96,7 +96,8 @@ apt install -y -q software-properties-common
 
 apt install -y -q ansible
 
-echo 'PATH="/home/casey/.local/bin:$PATH"' >>/etc/environment
+echo 'export PATH="/home/casey/.local/bin:$PATH"' >>/home/casey/.bashrc
+echo 'export PATH="/home/casey/.local/bin:$PATH"' >>/home/casey/.zshrc
 
 #-------------------------------------------------------------------------------
 # Custom Package Installation [Terraform]
@@ -206,7 +207,9 @@ curl -sfL https://get.k3s.io | INSTALL_K3S_SKIP_ENABLE=true INSTALL_K3S_SKIP_STA
 # https://starship.rs/zh-CN/guide/#%F0%9F%9A%80-%E5%AE%89%E8%A3%85
 #-------------------------------------------------------------------------------
 
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+ZDOTDIR="/home/casey" ZSH="/home/casey/.oh-my-zsh" CHSH="no" RUNZSH="no" sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+chown -R casey:casey /home/casey/.oh-my-zsh
+chown casey:casey /home/casey/.zshrc
 curl -sS https://starship.rs/install.sh | sh -s - -y
 echo 'eval "$(starship init bash)"' >>/home/casey/.bashrc
 echo 'eval "$(starship init zsh)"' >>/home/casey/.zshrc || echo 'starship init zsh failed'

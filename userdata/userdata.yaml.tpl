@@ -227,7 +227,7 @@ ansible:
   run_user: casey
   galaxy:
     actions:
-      - ["ansible-galaxy", "collection", "install", "community.general"]
+      - ["/home/casey/.local/bin/ansible-galaxy", "collection", "install", "community.general"]
 
 
 
@@ -236,7 +236,8 @@ runcmd:
   - |
     update-alternatives --set editor /usr/bin/vim.basic
   - |
-    echo 'PATH="/home/casey/.local/bin:$PATH"' >>/etc/environment
+    echo 'export PATH="/home/casey/.local/bin:$PATH"' >>/home/casey/.bashrc
+    echo 'export PATH="/home/casey/.local/bin:$PATH"' >>/home/casey/.zshrc
   - |
     cat >/etc/profile.d/terraform.sh <<__EOF__
     if [ -n "\$BASH_VERSION" ]; then
@@ -293,7 +294,9 @@ runcmd:
   - |
     curl -sfL https://get.k3s.io | INSTALL_K3S_SKIP_ENABLE=true INSTALL_K3S_SKIP_START=true INSTALL_K3S_VERSION=v1.23.17+k3s1 sh -
   - |
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    ZDOTDIR="/home/casey" ZSH="/home/casey/.oh-my-zsh" CHSH="no" RUNZSH="no" sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    chown -R casey:casey /home/casey/.oh-my-zsh
+    chown casey:casey /home/casey/.zshrc
     curl -sS https://starship.rs/install.sh | sh -s - -y
     echo 'eval "$(starship init bash)"' >>/home/casey/.bashrc
     echo 'eval "$(starship init zsh)"' >>/home/casey/.zshrc || echo 'starship init zsh failed'

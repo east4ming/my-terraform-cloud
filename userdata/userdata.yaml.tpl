@@ -234,6 +234,8 @@ ansible:
 
 runcmd:
   - |
+    update-alternatives --set editor /usr/bin/vim.basic
+  - |
     echo 'PATH="/home/casey/.local/bin:$PATH"' >>/etc/environment
   - |
     cat >/etc/profile.d/terraform.sh <<__EOF__

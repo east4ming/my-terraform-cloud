@@ -290,7 +290,8 @@ runcmd:
   - |
     curl -sfL https://get.k3s.io | INSTALL_K3S_SKIP_ENABLE=true INSTALL_K3S_SKIP_START=true INSTALL_K3S_VERSION=v1.23.17+k3s1 sh -
   - |
-    curl -sS https://starship.rs/install.sh | sh
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    curl -sS https://starship.rs/install.sh | sh -s - -y
     echo 'eval "$(starship init bash)"' >>/home/casey/.bashrc
     echo 'eval "$(starship init zsh)"' >>/home/casey/.zshrc || echo 'starship init zsh failed'
   - |

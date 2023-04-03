@@ -202,11 +202,12 @@ systemctl enable tailscale-weekly-update.timer
 curl -sfL https://get.k3s.io | INSTALL_K3S_SKIP_ENABLE=true INSTALL_K3S_SKIP_START=true INSTALL_K3S_VERSION=v1.23.17+k3s1 sh -
 
 #-------------------------------------------------------------------------------
-# Custom Package Installation [Starship]
+# Custom Package Installation [ohmyzsh & Starship]
 # https://starship.rs/zh-CN/guide/#%F0%9F%9A%80-%E5%AE%89%E8%A3%85
 #-------------------------------------------------------------------------------
 
-curl -sS https://starship.rs/install.sh | sh
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+curl -sS https://starship.rs/install.sh | sh -s - -y
 echo 'eval "$(starship init bash)"' >>/home/casey/.bashrc
 echo 'eval "$(starship init zsh)"' >>/home/casey/.zshrc || echo 'starship init zsh failed'
 

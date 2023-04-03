@@ -12,8 +12,8 @@ users:
   - name: casey
     primary_group: casey
     groups:  [adm, admin, audio, cdrom, dialout, dip, floppy, lxd, netdev, plugdev, sudo, video, users]
-    lock_passwd: True
-    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    lock_passwd: true
+    sudo: ALL=(ALL) NOPASSWD:ALL
     shell: /bin/zsh
     ssh_authorized_keys: 
       - ${ssh_authorized_keys}
@@ -251,12 +251,14 @@ runcmd:
     echo 'net.bridge.bridge-nf-call-iptables=1' >>/etc/sysctl.conf
   - |
     curl -fsSL https://get.docker.com | sh
-    usermod -aG docker ubuntu
+    usermod -aG docker casey
     apt install -y -q docker-compose-plugin
   - |
     curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/jammy.noarmor.gpg | tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
     curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/jammy.tailscale-keyring.list | tee /etc/apt/sources.list.d/tailscale.list
     apt update -y -q && apt install -y -q tailscale
+  - |
+    tailscale up --ssh --authkey=${tailscale_authkey}
   - |
     cat >/etc/systemd/system/tailscale-weekly-update.service <<__EOF__
     [Unit]
@@ -285,8 +287,6 @@ runcmd:
     __EOF__
   - |
     systemctl enable tailscale-weekly-update.timer  
-  - |
-    tailscale up --ssh --authkey=${tailscale_authkey}
   - |
     curl -sfL https://get.k3s.io | INSTALL_K3S_SKIP_ENABLE=true INSTALL_K3S_SKIP_START=true INSTALL_K3S_VERSION=v1.23.17+k3s1 sh -
   - |

@@ -233,7 +233,8 @@ ansible:
 
 
 runcmd:
-  - [ terraform, -install-autocomplete ]
+  - |
+    echo 'PATH="/home/casey/.local/bin:$PATH"' >>/etc/environment
   - |
     cat >/etc/profile.d/terraform.sh <<__EOF__
     if [ -n "\$BASH_VERSION" ]; then

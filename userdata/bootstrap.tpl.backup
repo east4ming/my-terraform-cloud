@@ -96,6 +96,8 @@ apt install -y -q software-properties-common
 
 apt install -y -q ansible
 
+echo 'PATH="/home/casey/.local/bin:$PATH"' >>/etc/environment
+
 #-------------------------------------------------------------------------------
 # Custom Package Installation [Terraform]
 # https://www.terraform.io/docs/cli/install/apt.html
@@ -112,8 +114,6 @@ apt clean -y
 
 # Update and install Terraform Infrastructure as Code (IaC) Tools (from HashiCorp Linux Repository)
 apt update -y -q && apt install -y -q terraform
-
-terraform -install-autocomplete
 
 # Configure terraform software
 

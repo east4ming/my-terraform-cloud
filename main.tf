@@ -149,7 +149,18 @@ resource "oci_core_security_list" "test_security_list" {
       min = "8080"
     }
   }
+  
+  ingress_security_rules {
+    description = "nomad"
+    protocol    = "6"
+    source      = "0.0.0.0/0"
 
+    tcp_options {
+      max = "4648"
+      min = "4646"
+    }
+  }
+  
   ingress_security_rules {
     description = "k8s api"
     protocol    = "6"
